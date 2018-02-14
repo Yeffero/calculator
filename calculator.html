@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Calculator Project</title>
+<link rel="stylesheet" href="style.css">
+
+</head>
+<body id=container>
+  <div class="titulo" ><b>CALCULATOR</b></div>
+
+  <div class="display">
+    <form>
+      <input id=entrada type="text" name="entrada" readonly placeholder="1234567890">
+
+    </form>
+  </div>
+
+  <div class="numbers">
+    <button class="operate item1">AC</button>
+    <button class="operate ">C</button>
+    <button class="operate">+</button>
+    <button class="button">1</button>
+    <button class="button">2</button>
+    <button class="button">3</button>
+    <button class="operate">-</button>
+    <button class="button">4</button>
+    <button class="button">5</button>
+    <button class="button">6</button>
+    <button class="operate">*</button>
+
+    <button class="button">7</button>
+    <button class="button">8</button>
+    <button class="button">9</button>
+
+  <button class="operate">/</button>
+
+    <button class="button item2">0</button>
+
+
+    <button class="button">.</button>
+    <button class="operate">=</button>
+  </div>
+
+
+
+  <script>
+ 	// Your JavaScript goes here!
+function roundAnswer(s)
+{ let integerss=0;
+  let value=s.toString();
+  if (value.length< size)
+      {
+        return(Number(value));
+      }else {
+        integerss=(value.indexOf(".")+1);
+        let count = (value.length-integerss);
+
+        count=size-integerss-1;
+        return (Number(value).toPrecision(count));
+      }
+
+}
+function restartCalculator(){
+  liveOperators= 0;
+  after=0;
+  before=0;
+  displayText="0";
+  entrada.placeholder="0";
+  currentOperation="";
+  lastOperation="";
+  reciveNumbers=0;
+}
+
+  function add(a, b) {
+    return a + b;
+  }
+
+  function subtract(a, b) {
+    return a - b;
+  }
+  function divide(a, b) {
+    if  (b==0){displayText="Error";entrada.placeholder=displayText;return "Error";}
+    return a /  b;
+  }
+
+  function multiply(a, b) {
+    return a * b;
+  }
+
+  function operater (operator,n1,n2)
+  { let result=0;
+      switch (operator) {
+        case '+':
+          result= add(n1,n2);
+          break;
+        case '-':
+          result= subtract(n1,n2);
+            break;
+        case '*':
+          result= multiply(n1,n2);
+          break;
+
+        case '/':
+          result= divide(n1,n2);
+            break;
+        default:
+
+      }
+
+      return result;
+    }
+
+function Numbers(e){
+  //  console.log(e);
+  if (displayText=="Error")  {
+    restartCalculator();
+  }
+
+  if (displayText=="0") {
+    displayText="";  }
+    if (liveOperators==1)
+      { displayText=e.currentTarget.innerHTML;
+        liveOperators=0;
+
+      }
+
+    else {
+
+        if (displayText.indexOf(".")==-1 ) {
+
+        if (displayText.length <size ) { displayText+=e.currentTarget.innerHTML;}
+        } else if (e.currentTarget.innerHTML=="." ){
+
+        //no add
+      }else {
+        if (displayText.length <size ) {displayText+=e.currentTarget.innerHTML;}
+      }
+      }
+    entrada.placeholder=displayText;
+    reciveNumbers=1;
+
+}
+
+function operation(e){
+
+  if (displayText=="Error")  {
+    restartCalculator();
+  }
+  //  currentOperation=e.target.placeholder;
+if (currentOperation==""  ) {
+
+    currentOperation=e.target.innerHTML;
+    liveOperators=0;
+} else if (reciveNumbers==1){
+
+  lastOperation=currentOperation;
+  currentOperation=e.target.innerHTML;
+  //reciveNumbers=0;
+  if (currentOperation!="=" && lastOperation=="=") {liveOperators=0;} else {liveOperators=1;}
+  //liveOperators=1;
+}
+
+  switch (currentOperation) {
+    case "+" :
+    case "-":
+    case "/":
+    case "*":
+      if (liveOperators == 0 && reciveNumbers>0 ) {
+         before=Number(displayText);
+
+        liveOperators++;
+      }
+        else if (liveOperators == 1 && reciveNumbers==1 )
+      //  && lastOperation==currentOperation)
+        {
+
+          after=Number(displayText);
+          reciveNumbers=1;
+          before= Number(operater(lastOperation,before,after));
+          reciveNumbers=1;
+          liveOperators=0;
+          //before=before.toPrecision(9);
+          //displayText=before.toString();
+          displayText=roundAnswer(before);
+          entrada.placeholder=displayText;
+          after=0;
+          //currentOperation="";
+          //lastOperation="";
+          liveOperators++;
+        }
+
+
+      break;
+      case "C" :
+        after=0;
+        displayText=after.toString();
+        entrada.placeholder=displayText;
+        currentOperation=lastOperation;
+      break;
+
+      case "=":
+
+        if (liveOperators== 1  && lastOperation != "=" ) {
+          after=Number(displayText);
+          before= Number(operater(lastOperation,before,after));
+          //before=before.toPrecision(9);
+          liveOperators=0;
+          displayText= roundAnswer(before);
+          entrada.placeholder=displayText;
+          after=0;
+          reciveNumbers=1;
+          //currentOperation="=";
+          //lastOperation="=";
+          }
+          else if (lastOperation==currentOperation){
+            before=Number(displayText);
+            reciveNumbers=1;
+          }
+          break;
+
+
+          case 'AC':
+          restartCalculator();
+
+            break;
+
+  }
+
+}
+
+
+
+
+//MAIN
+
+let windowWidth=screen.width;
+let before=0;
+let after=0;
+let displayText="";
+let liveOperators =0;
+let lastOperation="";
+let currentOperation="";
+let reciveNumbers=0;
+let size=12;
+
+
+const container = document.querySelector('#container');
+//console.log(screen.width);
+container.setAttribute('style', 'display:block ; background: rgba(0, 150, 98, 0.5) ; border: 10px solid #2f2c2b ; margin:0 auto; width:' + windowWidth/3 +'px; text-align:center; box-shadow: 5px 10px #aaaaaa;'  );
+//const display = document.querySelector('display');
+//display.setAttribute('style', ' border: 1px solid black; margin:0 auto; width:' + windowWidth/2 +'px; text-align:center; border: 200px'  );
+
+const entrada = document.querySelector('#entrada');
+//entrada.setAttribute('style', '  width:' + (windowWidth/2)-1 +'px'  );
+const operators = Array.from(document.querySelectorAll('.operate'));
+//console.log(operators);
+for (var i = 0; i < operators.length; i++) {
+  operators[i].addEventListener('click',operation);
+}
+
+
+const buttons = Array.from(document.querySelectorAll('.button'));
+for (var i = 0; i < buttons.length; i++) {
+  buttons[i].addEventListener('click',Numbers);
+}
+
+
+
+//Button of Reset
+
+
+
+  /*function sum(array) {
+    return array.reduce((current, total) => total + current, 0);
+  }
+
+  function multiply(array) {
+    return array.reduce((current, total) => total * current, 1);
+  }
+
+  function power(a, b) {
+    return Math.pow(a, b);
+  }
+
+  function factorial(n) {
+    if (n == 0) return 1;
+    let product = 1;
+    for (let i = n; i > 0; i--) {
+      product *= i;
+    }
+    return product;
+  }
+
+  // This is another implementation of Factorial that uses recursion
+  // THANKS to @ThirtyThreeB!
+  function recursiveFactorial(n) {
+    if (n===0){
+      return 1;
+    }
+    return n * factorial (n-1);
+  }
+*/
+
+  </script>
+</body>
+</html>
